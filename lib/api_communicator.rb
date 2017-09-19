@@ -7,20 +7,18 @@ def get_character_movies_from_api(character)
   #make the web request
 api_address = 'http://www.swapi.co/api/people/'
   all_characters = RestClient.get(api_address)
-  binding.pry
-  character_hash = JSON.parse(all_characters)
-#  binding.pry
-  if all_characters.include?(character)
 
-#if character_hash.include?(character)
+  character_hash = JSON.parse(all_characters)
+      while !all_characters.include?(character)
+        api_address = character_hash["next"]
+        all_characters = RestClient.get(api_address)
+
+        character_hash = JSON.parse(all_characters)
+      end
 
   character_data = character_hash["results"].find {|data| data["name"] == character}
   film_data = character_data["films"]
   film_hash = film_data.collect {|url| JSON.parse(RestClient.get(url))} # film_names = array of objects
-else
-  api_address = character_hash["next"]
-  binding.pry
-end
 
 end
 
