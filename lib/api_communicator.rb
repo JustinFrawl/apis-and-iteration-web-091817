@@ -1,28 +1,65 @@
 require 'rest-client'
 require 'json'
 require 'pry'
-charcter_hash = {}
+
 
 def get_character_movies_from_api(character)
-  #make the web request
-api_address = 'http://www.swapi.co/api/people/'
-  all_characters = RestClient.get(api_address)
+    # make the web request
+    # every_thing_else(character)
+  api_address = 'http://www.swapi.co/api/people/'
+    all_characters = RestClient.get(api_address)
 
-  character_hash = JSON.parse(all_characters)
-      while !all_characters.include?(character)
-        api_address = character_hash["next"]
-        all_characters = RestClient.get(api_address)
+    character_hash = JSON.parse(all_characters)
 
-        character_hash = JSON.parse(all_characters)
-      end
+        while !all_characters.include?(character)
+          api_address = character_hash["next"]
+          all_characters = RestClient.get(api_address)
 
+          character_hash = JSON.parse(all_characters)
+        end
+        # binding.pry
+        get_film_hash(character_hash, character)
+
+    # character_data = character_hash["results"].find {|data| data["name"] == character}
+    # film_data = character_data["films"]
+    # film_hash = film_data.collect {|url| JSON.parse(RestClient.get(url))} # film_names = array of objects
+
+  end
+
+# def web_request(api_address)
+#   all_characters = RestClient.get(api_address)
+#
+#   character_hash = JSON.parse(all_characters)
+#
+# end
+# def every_thing_else(character)
+#   api_address = 'http://www.swapi.co/api/people/'
+#     all_characters = RestClient.get(api_address)
+#
+#     character_hash = JSON.parse(all_characters)
+#
+#         while !all_characters.include?(character)
+#           api_address = character_hash["next"]
+#           all_characters = RestClient.get(api_address)
+#
+#           character_hash = JSON.parse(all_characters)
+#         end
+#       end
+
+def while_hash
+  while !all_characters.include?(character)
+    api_address = character_hash["next"]
+    all_characters = RestClient.get(api_address)
+
+    character_hash = JSON.parse(all_characters)
+  end
+end
+
+def get_film_hash(character_hash, character)
   character_data = character_hash["results"].find {|data| data["name"] == character}
   film_data = character_data["films"]
   film_hash = film_data.collect {|url| JSON.parse(RestClient.get(url))} # film_names = array of objects
-
 end
-
-
   # iterate over the character hash to find the collection of `films` for the given
   #   `character`
   # collect those film API urls, make a web request to each URL to get the info
@@ -34,12 +71,6 @@ end
   #  of movies by title. play around with puts out other info about a given film.
 
 
-# def loop_pages()
-#   if character
-#
-#   end
-#
-# end
 
 
 def parse_character_movies(films_hash)
